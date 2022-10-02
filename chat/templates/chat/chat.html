@@ -1,0 +1,196 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="{% static 'css/chat.css'%}"
+        />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="{% static 'icons/bootstrap-icons.css'%}"
+        />
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="second">
+            <nav>
+                <div class="container">
+                    <a
+                        href="{% url 'chat:return' thread_id=thread.id %}"
+                        class="bi bi-chevron-left"
+                    ></a>
+
+                    <h3>
+                        {% if thread.thread_type == 'personal' %}
+                            <a
+                            href="{% url 'accounts:profile' username=other_user.username%}"
+                            >{{other_user.first_name}} {{ other_user.last_name }}</a
+                        >
+                        {% else %}
+                            <a
+                                href=""
+                                >{{ thread.groupprofile.name | safe }}</a
+                            >   
+                        {% endif %}
+                    </h3>
+
+                    <a href="">
+                        <img src="/images/sign-out.svg" alt="" {% if thread.thread_type == 'personal' %} style="visibility:hidden;" {% endif %} />
+                    </a>
+
+                </div>
+            </nav>
+
+            <div class="chat-section">
+                <div class="container">
+                    {% for message in messages %} 
+                        {% if message == thread.chatmessage_set.all.last %}
+                            {% if message.sender != request.user %}
+                                <div class="left chat-message" id="last">{{ message.message }}</div>
+                            {% else %}
+                                <div class="right chat-message" id="last">{{ message.message }}</div>
+                            {% endif %} 
+                        {% else %}
+                            {% if message.sender != request.user %}
+                                <div class="left chat-message">{{ message.message }}</div>
+                            {% else %}
+                                <div class="right chat-message">{{ message.message }}</div>
+                            {% endif %} 
+                        {% endif %}
+                    {% empty %} 
+                        Start chat with {{other_user.username }} 
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="message-sender">
+                <form action="" method="post" id="form">
+                    {% csrf_token %}
+                    <textarea
+                        name="message"
+                        id="message"
+                        placeholder="Send message"
+                        required
+                    ></textarea>
+                    <input type="submit" value="submit" />
+                    <label class="bi bi-cursor-fill" id="submit-btn" for="submit"></label>
+                    <input type="submit" style="display: none" id="submit"/>
+                </form>
+            </div>
+        </div>
+
+        <div
+            style="position: relative; border: 1px solid var(--bs-dark)"
+            id="first"
+            class="mobile-hide"
+        >
+            <nav id="second">
+                <div class="container">
+                    <div class="bi bi-text-paragraph icons"></div>
+
+                    <div style="width: 70%">
+                        <h2
+                            class="hid"
+                            id="chats"
+                            style="width: 100%; text-align: center"
+                        >
+                            Chats
+                        </h2>
+                        <input
+                            type="search"
+                            id="search"
+                            class="hide"
+                            placeholder="Search users"
+                        />
+                    </div>
+
+                    <div class="bi bi-search icons" id="search-icon"></div>
+                    <div class="bi bi-x hide x" id="close-search"></div>
+                </div>
+            </nav>
+
+            <a href="{% url 'chat:new' %}" class="bi bi-plus-lg plus-floating-btn"></a>
+            <div class="chat-list">
+                <div class="container">
+                    {% for thread in user_threads %} 
+                        {% if thread.thread_type == 'personal' %} 
+                            {% for user in thread.users.all %} 
+                                {% if user != request.user %}
+                                    <a
+                                        href="{% url 'chat:personal-chat' username=user.username %}"
+                                        class="chat-link"
+                                        id="{{ thread.html_id }}"
+                                    >
+                                        <div class="chat">
+                                            <div>
+                                                <img
+                                                    src="{{ user.userprofile.image.url }}"
+                                                    alt=""
+                                                />
+                                            </div>
+                                            <div>
+                                                <h5>{{user.first_name}} {{user.last_name}}</h5>
+                                                <p>{{ thread.chatmessage_set.all.last.message}}</p>
+                                            </div>
+
+                                            {% if thread.chatmessage_set.all.last.sender != request.user  and not thread.chatmessage_set.all.last.read %}
+                                                <div class="unread-count"></div>
+                                            {% endif %}
+                            <!-- <div class="unread-count">{{ thread.unread_messages_count }}</div> -->
+                                        </div>
+                                    </a>
+                                {% endif %} 
+                            {% endfor %} 
+                        {% elif thread.thread_type == 'group' %} 
+                            <a
+                                href="{% url 'chat:group-chat' id=thread.id %}"
+                                class="chat-link"
+                                id="{{ thread.html_id }}"
+                            >
+                                <div class="chat">
+                                    <div>
+                                        <img
+                                            src="{{ thread.groupprofile.image.url }}"
+                                            alt=""
+                                        />
+                                    </div>
+                                    <div>
+                                        <h5>{{ thread.groupprofile.name}}</h5>
+                                        <p>{{ thread.chatmessage_set.all.last.message}}</p>
+                                    </div>
+
+                                    {% if thread.chatmessage_set.all.last.sender != request.user  and not thread.chatmessage_set.all.last.read %}
+                                        <div class="unread-count"></div>
+                                    {% endif %}
+                    <!-- <div class="unread-count">{{ thread.unread_messages_count }}</div> -->
+                                </div>
+                            </a>
+                        {% endif %} 
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        {% include 'websockets.html' %} 
+
+        {% include 'toggle-sidebar.html' %}
+
+        <script>
+            const last =document.getElementById('last')
+            last.scrollIntoView()
+        </script>
+
+        {% include 'filter.html' %}
+    </body>
+</html>
+
+
+!

@@ -1,0 +1,22 @@
+<script>
+    const closeSearch = document.getElementById('close-search');
+    const search = document.getElementById('search');
+    const searchIcon = document.getElementById('search-icon');
+    const chatHeading = document.getElementById('chats');
+
+    searchIcon.addEventListener('click', () => {
+        searchIcon.classList.add('hide');
+        chatHeading.classList.add('hide');
+        search.classList.remove('hide');
+        closeSearch.classList.remove('hide');
+    });
+
+    closeSearch.addEventListener('click', () => {
+        searchIcon.classList.remove('hide');
+        chatHeading.classList.remove('hide');
+        search.classList.add('hide');
+        closeSearch.classList.add('hide');
+    });
+
+    const form = document.getElementById('form');
+</script>

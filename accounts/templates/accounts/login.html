@@ -1,0 +1,42 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/login.css'%}">
+    <title>Document</title>
+</head>
+<body>
+    <div class="login-form">
+        <form action="" method="POST">
+            {% csrf_token %}
+            <h3>Login</h3>
+
+            <div class="form-group">
+                <label for="">Username: </label>
+                <input type="text" id="username" name="username" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="">Password:</label>
+                <input type="password" name="password" id="password" class="form-control">
+            </div>
+
+            <input type="submit" value="Login" class="btn-submit">
+        </form>
+
+        
+        {% if form.non_field_errors %}
+            <p class="error">
+                {{ form.non_field_errors }}
+            </p>
+        {% endif %}
+
+        <p>Don't have an account? <a href="{% url 'accounts:signup' %}">Create one.</a></p>
+    </div>
+</body>
+</html>

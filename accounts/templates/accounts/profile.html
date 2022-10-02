@@ -1,0 +1,55 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="{% static 'icons/bootstrap-icons.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/profile.css' %}" />
+        <title>Document</title>
+    </head>
+    <body>
+        <div class="profile">
+            <nav>
+            <div class="container">
+                <a href="/chat" class="bi bi-chevron-left"></a>
+
+                <h2>Profile</h2>
+            </div>
+            </nav>
+
+        <div class="profile-section">
+            <img src="{{ profile.image.url }}" alt="" />
+
+            <div class="container">
+                <div class="control">
+                    <h5>Full name:</h5>
+                    <h2>{{ other_user.first_name }} {{ other_user.last_name}}</h2>
+                </div>
+
+                <div class="control">
+                    <h5>Usernmae:</h5>
+                    <h3 class="username">{{ other_user.username }}</h3>
+                </div>
+
+                <div class="control">
+                    <h5>Email</h5>
+                    <h2>
+                        {% if other_user.email %}
+                            {{other_user.email}}
+                        {% else %}
+                            ************
+                        {% endif %}
+                    </h2>
+                </div>
+
+                {% if user == other_user %}
+                    <a href="{% url 'accounts:edit' username=other_user.username %}">Edit Profile</a>
+                {% endif %}
+            </div>
+        </div>
+        </div>
+    </body>
+</html>

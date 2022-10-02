@@ -1,0 +1,20 @@
+<script>
+    const chat_list = document.querySelector('.chat-list .container');
+    const search_bar = document.getElementById('search');
+    const chats = document.querySelectorAll('.chat-link');
+
+    console.log(chats);
+    search_bar.addEventListener('input', (e) => {
+        let query = e.target.value.toLowerCase()
+        
+        chats.forEach((chat) => {
+            let chat_name = chat.firstElementChild.children[1].firstElementChild.innerText.toLowerCase()
+            if (chat_name.includes(query)){
+                
+                chat.classList.remove('hide')
+            }else{
+                chat.className = 'hide'
+            }
+        });
+    });
+</script>

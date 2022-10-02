@@ -1,0 +1,160 @@
+<div id="me" style="display: none">{{request.user.username}}</div>
+<div id="type" style="display: none">{{ thread.thread_type}}</div>
+{% if thread.thread_type == 'personal' %}
+<div id="other_user" style="display: none">
+    {{ other_user.first_name }} {{ other_user.last_name}}
+</div>
+<div id="image-url" style="display: none">
+    {{ other_user.userprofile.image.url }}
+</div>
+{% else %}
+<div id="name" style="display: none">{{ thread.groupprofile.name }}</div>
+<div id="image-url" style="display: none">
+    {{ thread.groupprofile.image.url }}
+</div>
+{% endif %}
+<div id="html-id" style="display: none">{{thread.html_id}}</div>
+
+{% if thread.thread_type == "personal" %}
+<div id="title" style="display: none">{{ other_user.first_name }} {{ other_user.last_name}}</div>
+{% else %}
+<div id="title" style="display: none">{{thread.groupprofile.name}}</div>
+{% endif %}
+
+<script>
+    const loc = window.location;
+    const html_id = document.getElementById('html-id').innerText;
+    const websocket = new WebSocket(`ws://${loc.host}${loc.pathname}`);
+    const me = document.getElementById('me').innerText;
+    const type = document.getElementById('type').innerText;
+    const image_url = document.getElementById('hmtl-id');
+    const title = document.getElementById('title').innerText;
+
+    websocket.onopen = function (event) {
+        //console.log(event, 'open');
+        const messageForm = document.getElementById('form');
+        const messageBox = document.getElementById('message');
+
+        messageForm.onsubmit = function (e) {
+            e.preventDefault();
+            const chat_message = messageBox.value;
+            const final_message = {
+                sender: me,
+                message: chat_message,
+                html_id: html_id,
+                type: type,
+                title: title,
+                image_url: image_url,
+            };
+            websocket.send(JSON.stringify(final_message));
+            messageForm.reset();
+        };
+    };
+
+    websocket.onclose;
+
+    websocket.onerror = function (e) {
+        console.log('error', e);
+    };
+
+    websocket.onmessage = async function (e) {
+        //console.log('message', e);
+        const chat_holder = document.querySelector('.chat-section .container');
+        const data = JSON.parse(e.data);
+        const message = data.chat_message;
+        const sender = data.sender;
+        const msg_id = data.html_id;
+        const id = data.id
+        console.log(id)
+        //console.log(msg_id)
+
+
+
+        if (html_id === msg_id) {
+            let div = document.createElement('div');
+            div.classList.add('chat-message');
+            if (sender === me) {
+                div.classList.add('right');
+            } else {
+                div.classList.add('left');
+            }
+
+            div.innerText = `${message}`;
+            chat_holder.append(div);
+            div.scrollIntoView();
+
+            if (sender !== me){
+                console.log(`Message: ${id} needs to be marked read`)
+                let res = await fetch(`/chat/api/messages/${id}`)
+                console.log(res)
+                let data = await res.json()
+                console.log(data)
+            }
+        } else {
+            //createNotification(tittle, message, data.image_url);
+        }
+       
+
+        updateChatList(msg_id);
+    };
+
+    const updateChatList = async function (mgs_id) {
+        const chat_list = document.querySelector('.chat-list .container');
+        let res = await fetch(`/chat/api/${me}`);
+        let data = await res.json();
+        //console.log(data);
+        chat_list.innerHTML = '';
+
+        data.forEach((chat) => {
+            //console.log(chat);
+            let a = document.createElement('a');
+            a.classList.add('chat-link')
+            a.setAttribute('id', chat.html_id);
+            if (chat.type === 'personal') {
+                a.setAttribute('href', `/chat/${chat.username}`);
+                a.innerHTML = `
+                <div class="chat">
+                    <div>
+                        <img src=${chat.image_url}>
+                    </div>
+
+                    <div>
+                        <h5>${chat.first_name} ${chat.last_name}</h5>
+                        <p>${chat.last_message}</p>
+                    </div>
+                </div>
+
+                `;
+            } else {
+                a.setAttribute('href', `/chat/groups/${chat.i_d}`);
+                a.innerHTML = `
+                    <div class="chat">
+                        <div>
+                            <img src=${chat.image_url}>
+                        </div>
+
+                        <div>
+                            <h5>${chat.name}</h5>
+                            <p>${chat.last_message}</p>
+                        </div>
+                    </div>
+
+                `;
+            }
+
+            if (!chat.unread && chat.sender !== me && chat.chat_id !== html_id){
+                let div = document.createElement('div')
+                div.classList.add('unread-count')
+                a.firstElementChild.append(div)
+            }
+            chat_list.appendChild(a);
+        });
+    };
+
+    const createNotification = function (tittle, body, icon) {
+        return new Notification(tittle, {
+            body: body,
+            icon: icon,
+        });
+    };
+</script>

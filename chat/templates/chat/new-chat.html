@@ -1,0 +1,82 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'css/new_chat.css'%}">
+        <link rel="stylesheet" type="text/css" href="{% static 'icons/bootstrap-icons.css'%}">
+
+        <style>
+        
+        </style>
+    </head>
+    <body>
+
+        <nav>
+            <div class="container">
+                <a href="/chat/" class="bi bi-chevron-left"></a>
+
+            <h3>New chat</h3>
+            </div>
+        </nav>
+
+        <div class="container">
+            <span class="toggle">Create Group chat</span>
+            {% include 'newgroupchat.html' %}
+            <form action="" method="get">
+                {% csrf_token %}
+                <input type="search" name="query" id="" placeholder="Search Users or Groups"/>
+            </form>
+
+            <h4>People</h4>            
+            {% for person in users %}
+                <a href="{% url 'chat:personal-chat' username=person.username %}" class="chat-link">
+                    <div class="holder">
+                        <img src="{{ person.userprofile.image.url}}" alt="">
+                        <div>
+                            <h4>{{person.first_name}} {{person.last_name}}</h4>
+                            <p>{{person.username}}</p>
+                        </div>
+                    </div>
+                </a>
+            {% empty %} 
+                no one 
+            {% endfor %} 
+            
+
+            <h4>Groups</h4>
+            {% for group in groups %} 
+                <a href="{% url 'chat:group-chat' id=group.thread.id %}" class="chat-link">
+                    <div class="holder">
+                        <img src="{{ group.image.url}}" alt="">
+                        <div>
+                            <h4>{{group.name}}</h4>
+                            <p>Created by {{group.creator}}</p>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+
+
+        <script>
+            const creationForm = document.getElementById('creation-form')
+            const toggle = document.querySelector('.toggle')
+
+            toggle.addEventListener('click', ()=>{
+                
+
+                if(creationForm.classList.contains('hide')){
+                    toggle.innerText = 'Cancel'
+                }else{
+                    toggle.innerHTML = 'Create Group chat'
+                }
+                creationForm.classList.toggle('hide')
+            })
+        </script>
+    </body>
+</html>

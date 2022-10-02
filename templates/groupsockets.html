@@ -1,0 +1,83 @@
+<div id="thread" style="display: none">{{thread.html_id}}</div>
+<div id="me" style="display: none">{{ request.user.username}}</div>
+
+<script>
+    const me = document.getElementById('me').innerText;
+    const thread = document.getElementById('thread').innerText;
+    const loc = window.location;
+
+    const websocket = new WebSocket(`ws://${loc.host}${loc.pathname}`);
+
+    websocket.onopen = function (e) {
+        console.log('connected', e);
+        const messageForm = document.getElementById('form');
+        const messageBox = document.getElementById('message');
+
+        messageForm.onsubmit = function (e) {
+            e.preventDefault();
+            const chat_message = messageBox.value;
+            const final_message = {
+                sender: me,
+                message: chat_message,
+                html_id: html_id,
+            };
+            websocket.send(JSON.stringify(final_message));
+            messageForm.reset();
+        };
+    };
+
+    websocket.onmessage = function (e) {
+        console.log('message', e);
+    };
+
+    websocket.onerror;
+
+    websocket.onclose;
+
+    const updateChatList = async function () {
+        const me = document.getElementById('me').innerText;
+        const chat_list = document.querySelector('.chat-list .container');
+        let res = await fetch(`/chat/api/${me}`);
+        let data = await res.json();
+        console.log(data);
+        chat_list.innerHTML = '';
+
+        data.forEach((chat) => {
+            console.log(chat);
+            let a = document.createElement('a');
+            a.setAttribute('id', chat.html_id);
+            if (chat.type === 'personal') {
+                a.setAttribute('href', `/chat/${chat.username}`);
+                a.innerHTML = `
+                <div class="chat">
+                    <div>
+                        <img src=${chat.image_url}>
+                    </div>
+
+                    <div>
+                        <h5>${chat.first_name} ${chat.last_name}</h5>
+                        <p>${chat.last_message}</p>
+                    </div>
+                </div>
+
+                `;
+            } else {
+                a.setAttribute('href', `/chat/groups/${chat.id}`);
+                a.innerHTML = `
+                    <div class="chat">
+                        <div>
+                            <img src=${chat.image_url}>
+                        </div>
+    
+                        <div>
+                            <h5>${chat.name}</h5>
+                            <p>${chat.last_message}</p>
+                        </div>
+                    </div>
+    
+                `;
+            }
+            chat_list.appendChild(a);
+        });
+    };
+</script>

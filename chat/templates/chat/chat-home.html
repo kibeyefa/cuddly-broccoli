@@ -1,0 +1,108 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.3" />
+        <link rel="stylesheet" href="{% static  'icons/bootstrap-icons.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/app.css' %}" />
+        <title>Document</title>
+    </head>
+    <body>
+        <div
+            style="position: relative; border: 1px solid var(--bs-dark)"
+            id="first"
+        >
+            <nav>
+                <div class="container">
+                    <div class="bi bi-text-paragraph icons"></div>
+
+                    <div style="width: 70%">
+                        <h2
+                            class="hid"
+                            id="chats"
+                            style="width: 100%; text-align: center"
+                        >
+                            Chats
+                        </h2>
+                        <input
+                            type="search"
+                            id="search"
+                            class="hide"
+                            placeholder="Search users"
+                        />
+                    </div>
+
+                    <div class="bi bi-search icons" id="search-icon"></div>
+                    <div class="bi bi-x hide x" id="close-search"></div>
+                </div>
+            </nav>
+
+            <a href="{% url 'chat:new' %}" class="bi bi-plus-lg floating-btn"></a>
+            <div class="chat-list">
+                <div class="container">
+
+                    {% for thread in threads %}
+                        {% if thread.thread_type == 'personal' %}
+                            {% for user in thread.users.all %}
+                                {% if user != request.user %}
+                                    <a href="{% url 'chat:personal-chat' username=user.username %}" class="chat-link" id="{{thread.html_id}}">
+                                        <div class="chat">
+                                            <div>
+                                                <img src="{{ user.userprofile.image.url }}" alt="" />
+                                            </div>
+                                            <div>
+                                                <h5>{{user.first_name}} {{user.last_name}}</h5>
+                                                <p>{{ thread.chatmessage_set.all.last.message }}</p>
+                                            </div>
+                                            
+                                            {% if thread.chatmessage_set.all.last.sender != request.user and not thread.chatmessage_set.all.last.read %}
+                                                <div class="unread-count">{{ thread.unread_messages_count }}</div>
+                                            {% endif %}
+                                        </div>
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                        {% elif thread.thread_type == 'group' %}
+                            <a
+                                href="{% url 'chat:group-chat' id=thread.id %}"
+                                class="chat-link"
+                                id="{{ thread.html_id }}"
+                            >
+                                <div class="chat">
+                                    <div>
+                                        <img
+                                            src="{{ thread.groupprofile.image.url }}"
+                                            alt=""
+                                        />
+                                    </div>
+                                    <div>
+                                        <h5>{{ thread.groupprofile.name}}</h5>
+                                        <p>{{ thread.chatmessage_set.all.last.message}}</p>
+                                    </div>
+
+                                    {% if thread.chatmessage_set.all.last.sender != request.user and not thread.chatmessage.all.last.read %}
+                                        <!-- <div class="unread-count"></div> -->
+                                    {% endif %}
+                    <!-- <div class="unread-count">{{ thread.unread_messages_count }}</div> -->
+                                </div>
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="messasges-section" id="second">
+            Click Chat to start
+        </div>
+
+        <div id="me" style="display: none">{{request.user.username}}</div>  
+
+        {% include 'chat-home-socket.html' %}
+        {% include 'toggle-sidebar.html' %}
+        {% include 'filter.html' %}
+    </body>
+</html>

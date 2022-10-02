@@ -1,0 +1,10 @@
+<form action="" method="post" class="hide" id="creation-form">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label for="name">Group name</label>
+        <input type="text" class="form-control" id="name" name="name" />
+    </div>
+
+    <input type="submit" value="Create Group" />
+</form>

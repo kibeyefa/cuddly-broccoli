@@ -61,25 +61,30 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'chatapp.urls'
 
 
-
 ASGI_APPLICATION = 'chatapp.routing.application'
 
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
-        },
-    },
-}
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             # "hosts": ["redis://default:FjZTlDuLszCQKtGhMgEz@containers-us-west-71.railway.app:5683", ('127.0.0.1', 6379)],
+#             "hosts": [('127.0.0.1', 6379)],
+#         },
+#     },
+# }
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [BASE_DIR / 'templates', ],
         'APP_DIRS': True,
-        'OPTIONS': { 
+        'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
@@ -95,9 +100,9 @@ WSGI_APPLICATION = 'chatapp.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-import dj_database_url
-db_from_env = dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(db_from_env)
+# import dj_database_url
+# db_from_env = dj_database_url.config(conn_max_age=500)
+# DATABASES['default'].update(db_from_env)
 
 DATABASES = {
     'default': {

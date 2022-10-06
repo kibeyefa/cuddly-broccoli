@@ -1,4 +1,4 @@
-from .forms import LoginFrom, SignupForm 
+from .forms import LoginFrom, SignupForm
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model, login, logout, authenticate
@@ -9,6 +9,7 @@ from .models import UserProfile
 User = get_user_model()
 # Create your views here.
 
+
 def get_redirect_if_exists(request):
     redirect = None
     if request.GET:
@@ -16,7 +17,6 @@ def get_redirect_if_exists(request):
             redirect = str(request.GET['next'])
 
     return redirect
-
 
 
 def register_view(request):
@@ -39,7 +39,7 @@ def register_view(request):
             UserProfile.objects.create(user=user)
             login(request, user)
 
-            return redirect(destination) if destination else redirect('home') 
+            return redirect(destination) if destination else redirect(f'/accounts/{user.username}/edit')
 
     return render(request, template_name, {
         'form': form
@@ -66,7 +66,6 @@ def login_view(request):
             login(request, user)
             return redirect(destination) if destination else redirect('home')
 
-
     return render(request, template_name, {
         'form': form,
     })
@@ -84,7 +83,7 @@ def profile_view(request, username):
     profile = UserProfile.objects.get(user=other_user)
     template_name = 'accounts/profile.html'
     print(my_self)
-    
+
     return render(request, template_name, {
         'user': user,
         'other_user': other_user,

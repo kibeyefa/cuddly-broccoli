@@ -1,7 +1,14 @@
 <script>
-    const websocket = new WebSocket(
-        `ws://${window.location.host}${window.location.pathname}`
-    );
+
+    if (window.location.protocol === 'https:') {
+        const websocket = new WebSocket(
+            `wss://${window.location.host}${window.location.pathname}`
+        );
+    } else {
+        const websocket = new WebSocket(
+            `ws://${window.location.host}${window.location.pathname}`
+        );
+    }
 
     websocket.onopen = function (e) {
         console.log('connected');

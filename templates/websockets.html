@@ -24,7 +24,7 @@
 <script>
     const loc = window.location;
     const html_id = document.getElementById('html-id').innerText;
-    const websocket = new WebSocket(`ws://${loc.host}${loc.pathname}`);
+    const websocket = new WebSocket(`wss://${loc.host}${loc.pathname}`);
     const me = document.getElementById('me').innerText;
     const type = document.getElementById('type').innerText;
     const image_url = document.getElementById('hmtl-id');

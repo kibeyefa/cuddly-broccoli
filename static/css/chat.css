@@ -23,23 +23,22 @@
   --bs-dark-lighter: #313437;
   --bs-black: black;
   --bs-font-sans-serif: system-ui, -apple-system, 'Segoe UI', Roboto,
-        'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif,
-        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-        'Noto Color Emoji';
+    'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
-        'Liberation Mono', 'Courier New', monospace;
+    'Liberation Mono', 'Courier New', monospace;
   --bs-gradient: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.15),
-        rgba(255, 255, 255, 0)
-    );
+    180deg,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0)
+  );
 }
 
 * {
   margin: 0;
   padding: 0;
   -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
@@ -50,7 +49,7 @@ body {
   font-family: var(--bs-font-sans-serif);
 }
 
-a{
+a {
   text-decoration: none;
   color: inherit;
 }
@@ -74,11 +73,11 @@ nav .container {
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
   -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
   height: 100%;
 }
 
@@ -93,6 +92,7 @@ nav img {
   border-bottom-left-radius: 1.5rem;
   height: 80vh;
   width: 100vw;
+  padding-bottom: 20px;
 }
 
 .chat-section .container {
@@ -101,8 +101,8 @@ nav img {
   display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
   overflow-x: auto;
   height: 100%;
   scrollbar-width: none;
@@ -121,7 +121,7 @@ nav img {
 
 .right {
   -ms-flex-item-align: end;
-      align-self: flex-end;
+  align-self: flex-end;
   background-color: var(--bs-dark);
   color: white;
   padding: 1rem;
@@ -147,10 +147,10 @@ nav img {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-pack: distribute;
-      justify-content: space-around;
+  justify-content: space-around;
   -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
   border-radius: 25px;
   padding: 0.2 1rem;
   width: 100%;
@@ -161,7 +161,7 @@ nav img {
 .message-sender i {
   color: white;
   -webkit-transform: rotate(45deg);
-          transform: rotate(45deg);
+  transform: rotate(45deg);
   cursor: pointer;
   margin-right: 10px;
 }
@@ -198,11 +198,11 @@ input[type='submit'] {
     display: flex;
     -webkit-box-orient: horizontal;
     -webkit-box-direction: reverse;
-        -ms-flex-direction: row-reverse;
-            flex-direction: row-reverse;
+    -ms-flex-direction: row-reverse;
+    flex-direction: row-reverse;
     -webkit-box-pack: start;
-        -ms-flex-pack: start;
-            justify-content: start;
+    -ms-flex-pack: start;
+    justify-content: start;
   }
   div#first {
     width: 30vw;
@@ -228,8 +228,8 @@ input[type='submit'] {
     display: -ms-flexbox;
     display: flex;
     -webkit-box-pack: justify;
-        -ms-flex-pack: justify;
-            justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
   }
   .chat-list {
     background-color: var(--bs-light);
@@ -248,27 +248,27 @@ input[type='submit'] {
     display: -ms-flexbox;
     display: flex;
     -webkit-box-pack: start;
-        -ms-flex-pack: start;
-            justify-content: start;
+    -ms-flex-pack: start;
+    justify-content: start;
     -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
     cursor: pointer;
     height: 4rem;
     width: 100%;
   }
   .chat div:first-of-type {
     -webkit-box-flex: 0;
-        -ms-flex: 0;
-            flex: 0;
+    -ms-flex: 0;
+    flex: 0;
     display: -ms-grid;
     display: grid;
     place-content: center;
   }
   .chat div:nth-child(2) {
     -webkit-box-flex: 1;
-        -ms-flex: 1;
-            flex: 1;
+    -ms-flex: 1;
+    flex: 1;
     margin-left: 1rem;
   }
   .chat div img {
@@ -276,7 +276,7 @@ input[type='submit'] {
     height: 2.5rem;
     border-radius: 50%;
     -o-object-fit: cover;
-       object-fit: cover;
+    object-fit: cover;
     display: -ms-grid;
     display: grid;
   }
@@ -322,33 +322,33 @@ input[type='submit'] {
     cursor: pointer;
     background-color: var(--bs-dark-lighter);
   }
-  input[type=search] {
+  input[type='search'] {
     background-color: var(--bs-dark-lighter);
     border: none;
     -webkit-box-sizing: border-box;
-            box-sizing: border-box;
-    padding: .2rem .7rem;
+    box-sizing: border-box;
+    padding: 0.2rem 0.7rem;
     border-radius: 1rem;
     color: white;
     height: 2rem;
     width: 100%;
     outline: none;
   }
-  input[type=search]::-webkit-input-placeholder {
+  input[type='search']::-webkit-input-placeholder {
     color: white;
-    opacity: .5;
+    opacity: 0.5;
   }
-  input[type=search]:-ms-input-placeholder {
+  input[type='search']:-ms-input-placeholder {
     color: white;
-    opacity: .5;
+    opacity: 0.5;
   }
-  input[type=search]::-ms-input-placeholder {
+  input[type='search']::-ms-input-placeholder {
     color: white;
-    opacity: .5;
+    opacity: 0.5;
   }
-  input[type=search]::placeholder {
+  input[type='search']::placeholder {
     color: white;
-    opacity: .5;
+    opacity: 0.5;
   }
   .x {
     font-size: 1.3rem;
@@ -371,10 +371,10 @@ input[type='submit'] {
     display: -ms-flexbox;
     display: flex;
     -ms-flex-pack: distribute;
-        justify-content: space-around;
+    justify-content: space-around;
     -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
     border-radius: 25px;
     padding: 0.2 1rem;
     width: 100%;
@@ -384,7 +384,7 @@ input[type='submit'] {
   .message-sender i {
     color: white;
     -webkit-transform: rotate(45deg);
-            transform: rotate(45deg);
+    transform: rotate(45deg);
     cursor: pointer;
     margin-right: 10px;
   }

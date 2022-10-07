@@ -1,3 +1,4 @@
 env/
 frontend/
 .env
+db.sqlite3

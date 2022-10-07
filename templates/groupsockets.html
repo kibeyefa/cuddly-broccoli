@@ -6,12 +6,13 @@
   const thread = document.getElementById('thread').innerText;
   const loc = window.location;
 
+  let websocket;
   if (window.location.protocol === 'https:') {
-    const websocket = new WebSocket(
+    websocket = new WebSocket(
       `wss://${window.location.host}${window.location.pathname}`
     );
   } else {
-    const websocket = new WebSocket(
+    websocket = new WebSocket(
       `ws://${window.location.host}${window.location.pathname}`
     );
   }

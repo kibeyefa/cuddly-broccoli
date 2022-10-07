@@ -28,13 +28,13 @@
   const type = document.getElementById('type').innerText;
   const image_url = document.getElementById('hmtl-id');
   const title = document.getElementById('title').innerText;
-
+  let websocket;
   if (window.location.protocol === 'https:') {
-    const websocket = new WebSocket(
+    websocket = new WebSocket(
       `wss://${window.location.host}${window.location.pathname}`
     );
   } else {
-    const websocket = new WebSocket(
+    websocket = new WebSocket(
       `ws://${window.location.host}${window.location.pathname}`
     );
   }

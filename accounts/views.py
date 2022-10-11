@@ -1,3 +1,4 @@
+from django.views import View
 from .forms import LoginFrom, SignupForm
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
@@ -103,9 +104,12 @@ def edit_profile_view(request, username):
         user.last_name = request.POST['last_name']
         user.email = request.POST['email']
         print(request.FILES)
-        if request.FILES['image']:
-            user_profile.image = request.FILES['image']
-            user_profile.save()
+        try:
+            if request.FILES['image'] and request.FILES['image']:
+                user_profile.image = request.FILES['image']
+                user_profile.save()
+        except:
+            pass
         user.save()
 
         return redirect('accounts:profile', username=user.username)
@@ -114,3 +118,12 @@ def edit_profile_view(request, username):
         'user': user,
         'user_profile': user_profile
     })
+
+
+class LogoutView(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, 'accounts/logout.html')
+
+    def post(self, request, *args, **kwargs):
+        logout(request)
+        return redirect('/')

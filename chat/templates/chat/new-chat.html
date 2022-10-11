@@ -2,81 +2,132 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Document</title>
-        <link rel="stylesheet" type="text/css" href="{% static 'css/new_chat.css'%}">
-        <link rel="stylesheet" type="text/css" href="{% static 'icons/bootstrap-icons.css'%}">
 
-        <style>
-        
-        </style>
-    </head>
-    <body>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'icons/bootstrap-icons.css'%}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css'%}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/app.css'%}">
 
-        <nav>
-            <div class="container">
-                <a href="/chat/" class="bi bi-chevron-left"></a>
+  <style>
 
-            <h3>New chat</h3>
+  </style>
+</head>
+
+<body>
+  <div class="">
+    <nav style="height: 80px;" class="bg-dark text-white d-flex align-items-center">
+      <div class="container d-flex align-items-center">
+        <a href="/chat/" class="bi bi-chevron-left text-white fw-bold"></a>
+
+        <h3 class="mx-auto mb-0">New chat</h3>
+
+        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+          data-bs-target="#staticBackdropLive">
+          New group chat
+        </button>
+      </div>
+    </nav>
+
+    <div class="scrollarea mt-4" style="height: calc(100vh - 80px);">
+      <div class="container">
+        <!-- {% include 'newgroupchat.html' %} -->
+
+        <form action="" method="get" class="input-group">
+          <!-- {% csrf_token %} -->
+          <input type="search" class="form-control" name="query" id="" placeholder="Search Users or Groups" />
+          <button type="submit" class="btn btn-secondary ">Search</button>
+          <!-- <button type="submit" class="btn btn-outline-secondary">Create group chat</button> -->
+        </form>
+
+        <div class="row g-md-2 my-2">
+          <h5 class=" text-decoration-underline">People</h5>
+          {% for person in users %}
+          <a href="{% url 'chat:personal-chat' username=person.username %}" class="chat-link col-12 col-md-6">
+            <div class="holder chat d-flex align-items-center px-2 bg-body shadow-sm rounded-2">
+              <div>
+                <img src="{{ person.userprofile.image.url}}" alt="" class="img-fluid rounded-circle me-2" width="50px">
+              </div>
+              <div>
+                <h6 class="mb-0">{{person.first_name}} {{person.last_name}}</h6>
+                <p class="small mb-0">{{person.username}}</p>
+              </div>
             </div>
-        </nav>
-
-        <div class="container">
-            <span class="toggle">Create Group chat</span>
-            {% include 'newgroupchat.html' %}
-            <form action="" method="get">
-                {% csrf_token %}
-                <input type="search" name="query" id="" placeholder="Search Users or Groups"/>
-            </form>
-
-            <h4>People</h4>            
-            {% for person in users %}
-                <a href="{% url 'chat:personal-chat' username=person.username %}" class="chat-link">
-                    <div class="holder">
-                        <img src="{{ person.userprofile.image.url}}" alt="">
-                        <div>
-                            <h4>{{person.first_name}} {{person.last_name}}</h4>
-                            <p>{{person.username}}</p>
-                        </div>
-                    </div>
-                </a>
-            {% empty %} 
-                no one 
-            {% endfor %} 
-            
-
-            <h4>Groups</h4>
-            {% for group in groups %} 
-                <a href="{% url 'chat:group-chat' id=group.thread.id %}" class="chat-link">
-                    <div class="holder">
-                        <img src="{{ group.image.url}}" alt="">
-                        <div>
-                            <h4>{{group.name}}</h4>
-                            <p>Created by {{group.creator}}</p>
-                        </div>
-                    </div>
-                </a>
-            {% endfor %}
+          </a>
+          {% empty %}
+          <small>No results found</small>
+          {% endfor %}
         </div>
 
 
-        <script>
-            const creationForm = document.getElementById('creation-form')
-            const toggle = document.querySelector('.toggle')
+        <div class="row g-md-2">
+          <h5 class=" text-decoration-underline">Groups</h5>
+          {% for group in groups %}
+          <a href="{% url 'chat:group-chat' id=group.thread.id %}" class="chat-link col-12 col-md-6">
+            <div class="holder chat d-flex align-items-center px-2 bg-body shadow-sm rounded-2">
+              <div>
+                <img src="{{ group.image.url}}" alt="" class="img-fluid rounded-circle me-2" width="50px">
+              </div>
+              <div>
+                <h6 class="mb-0">{{group.name}}</h6>
+                <p class="small mb-0">Created by {{group.creator}}</p>
+              </div>
+            </div>
+          </a>
+          {% empty %}
+          <small>No results found</small>
+          {% endfor %}
+        </div>
 
-            toggle.addEventListener('click', ()=>{
-                
+        <div>
+          <div class="modal fade" id="staticBackdropLive" data-bs-backdrop="static" data-bs-keyboard="false"
+            tabindex="-1" aria-labelledby="staticBackdropLiveLabel" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog">
+              <form class="modal-content" method="post">
+                {% csrf_token %}
+                <div class="modal-header">
+                  <h5 class="modal-title" id="staticBackdropLiveLabel">Create new group chat</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <label for="name" class="form-label">Group name</label>
+                  <input type="text" class="form-control" id="name" name="name">
 
-                if(creationForm.classList.contains('hide')){
-                    toggle.innerText = 'Cancel'
-                }else{
-                    toggle.innerHTML = 'Create Group chat'
-                }
-                creationForm.classList.toggle('hide')
-            })
-        </script>
-    </body>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const creationForm = document.getElementById('creation-form')
+    const toggle = document.querySelector('.toggle')
+
+    toggle.addEventListener('click', () => {
+
+
+      if (creationForm.classList.contains('hide')) {
+        toggle.innerText = 'Cancel'
+      } else {
+        toggle.innerHTML = 'Create Group chat'
+      }
+      creationForm.classList.toggle('hide')
+    })
+  </script>
+
+  <!-- <script src="/static/js/bootstrap.bundle.min.js"></script> -->
+  <script src="/static/js/bootstrap.min.js"></script>
+</body>
+
 </html>

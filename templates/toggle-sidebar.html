@@ -1,22 +1,25 @@
 <script>
-    const closeSearch = document.getElementById('close-search');
-    const search = document.getElementById('search');
-    const searchIcon = document.getElementById('search-icon');
-    const chatHeading = document.getElementById('chats');
+  const closeSearch = document.getElementById('close-search');
+  const search = document.getElementById('search');
+  const searchIcon = document.getElementById('search-icon');
+  const chatHeading = document.getElementById('chats');
 
-    searchIcon.addEventListener('click', () => {
-        searchIcon.classList.add('hide');
-        chatHeading.classList.add('hide');
-        search.classList.remove('hide');
-        closeSearch.classList.remove('hide');
+  searchIcon.addEventListener('click', () => {
+    searchIcon.classList.add('d-none');
+    chatHeading.classList.add('d-none');
+    search.classList.remove('d-none');
+    closeSearch.classList.remove('d-none');
+  });
+
+  closeSearch.addEventListener('click', () => {
+    searchIcon.classList.remove('d-none');
+    chatHeading.classList.remove('d-none');
+    search.classList.add('d-none');
+    closeSearch.classList.add('d-none');
+
+    chats.forEach((chat) => {
+      chat.classList.remove('d-none')
     });
-
-    closeSearch.addEventListener('click', () => {
-        searchIcon.classList.remove('hide');
-        chatHeading.classList.remove('hide');
-        search.classList.add('hide');
-        closeSearch.classList.add('hide');
-    });
-
-    const form = document.getElementById('form');
+  });
+  const form = document.getElementById('form');
 </script>

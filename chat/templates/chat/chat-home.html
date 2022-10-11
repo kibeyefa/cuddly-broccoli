@@ -1,108 +1,100 @@
+{% extends 'chat/base.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.3" />
-        <link rel="stylesheet" href="{% static  'icons/bootstrap-icons.css' %}" />
-        <link rel="stylesheet" href="{% static 'css/app.css' %}" />
-        <title>Document</title>
-    </head>
-    <body>
+{% block 'content' %}
+<div class="col-12 col-lg-4 col-xl-3 col-xxl-2 bg-dark d-flex flex-column p-0 left-section position-relative">
+  <nav style="height: 80px;" class="d-flex align-items-center">
+    <div class="container-fluid d-flex justify-content-between align-items-center text-white">
+      <!-- <div class="bi bi-text-paragraph icons"></div> -->
+      <div class="dropdown">
+        <button class="btn btn-secondary btn-sm dropdown-toggle bi bi-text-paragraph icons" type="button"
+          id="dropdownMenuButtonSM" data-bs-toggle="dropdown" aria-expanded="false">
+
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButtonSM">
+          <li><a class="dropdown-item" href="/accounts/{{user.username}}">Profile</a></li>
+          <li><a class="dropdown-item" href="/accounts/logout/">Logout</a></li>
+          <!-- <li><a class="dropdown-item" href="#">Something else here</a></li> -->
+          <!-- <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item" href="#">Separated link</a></li> -->
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-center" id="chats">
+          Chats
+        </h2>
+        <input type="search" id="search" class="d-none form-control" placeholder="Filter chats" />
+      </div>
+
+      <div class="bi bi-search icons" id="search-icon"></div>
+      <div class="bi bi-x  x d-none" id="close-search"></div>
+    </div>
+  </nav>
+
+  <a href="{% url 'chat:new' %}" class="bi bi-plus-lg plus-floating-btn"></a>
+  <div class="bg-white flex-fill chat-list-container">
+    <div class="chat-list scrollarea">
+
+      {% for thread in threads %}
+      {% if thread.thread_type == 'personal' %}
+      {% for user in thread.users.all %}
+      {% if user != request.user %}
+      <a href="{% url 'chat:personal-chat' username=user.username %}" class="chat-link" id="{{thread.html_id}}">
         <div
-            style="position: relative; border: 1px solid var(--bs-dark)"
-            id="first"
-        >
-            <nav>
-                <div class="container">
-                    <div class="bi bi-text-paragraph icons"></div>
+          class="d-flex chat text-black align-items-center px-3 {% if thread == user.thread_set.all.0 %}first-thread{% endif %}">
+          <div>
+            <img src="{{ user.userprofile.image.url }}" alt="" class=" img-rounded img-fluid rounded-circle"
+              width="45px" />
+          </div>
+          <div class="flex-fill ms-2">
+            <h6 class="mb-0">{{user.first_name}} {{user.last_name}}</h6>
+            <p class="small text-truncate chat-list-message mb-0 pb-0"
+              title="{{ thread.chatmessage_set.all.last.message }}">
+              {{ thread.chatmessage_set.all.last.message }}</p>
+          </div>
 
-                    <div style="width: 70%">
-                        <h2
-                            class="hid"
-                            id="chats"
-                            style="width: 100%; text-align: center"
-                        >
-                            Chats
-                        </h2>
-                        <input
-                            type="search"
-                            id="search"
-                            class="hide"
-                            placeholder="Search users"
-                        />
-                    </div>
-
-                    <div class="bi bi-search icons" id="search-icon"></div>
-                    <div class="bi bi-x hide x" id="close-search"></div>
-                </div>
-            </nav>
-
-            <a href="{% url 'chat:new' %}" class="bi bi-plus-lg floating-btn"></a>
-            <div class="chat-list">
-                <div class="container">
-
-                    {% for thread in threads %}
-                        {% if thread.thread_type == 'personal' %}
-                            {% for user in thread.users.all %}
-                                {% if user != request.user %}
-                                    <a href="{% url 'chat:personal-chat' username=user.username %}" class="chat-link" id="{{thread.html_id}}">
-                                        <div class="chat">
-                                            <div>
-                                                <img src="{{ user.userprofile.image.url }}" alt="" />
-                                            </div>
-                                            <div>
-                                                <h5>{{user.first_name}} {{user.last_name}}</h5>
-                                                <p>{{ thread.chatmessage_set.all.last.message }}</p>
-                                            </div>
-                                            
-                                            {% if thread.chatmessage_set.all.last.sender != request.user and not thread.chatmessage_set.all.last.read %}
-                                                <div class="unread-count">{{ thread.unread_messages_count }}</div>
-                                            {% endif %}
-                                        </div>
-                                    </a>
-                                {% endif %}
-                            {% endfor %}
-                        {% elif thread.thread_type == 'group' %}
-                            <a
-                                href="{% url 'chat:group-chat' id=thread.id %}"
-                                class="chat-link"
-                                id="{{ thread.html_id }}"
-                            >
-                                <div class="chat">
-                                    <div>
-                                        <img
-                                            src="{{ thread.groupprofile.image.url }}"
-                                            alt=""
-                                        />
-                                    </div>
-                                    <div>
-                                        <h5>{{ thread.groupprofile.name}}</h5>
-                                        <p>{{ thread.chatmessage_set.all.last.message}}</p>
-                                    </div>
-
-                                    {% if thread.chatmessage_set.all.last.sender != request.user and not thread.chatmessage.all.last.read %}
-                                        <!-- <div class="unread-count"></div> -->
-                                    {% endif %}
-                    <!-- <div class="unread-count">{{ thread.unread_messages_count }}</div> -->
-                                </div>
-                            </a>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            </div>
+          {% if thread.chatmessage_set.all.last.sender != request.user and not thread.chatmessage_set.all.last.read %}
+          <div class="unread-count rounded-circle bg-dark">{{ thread.unread_messages_count }}</div>
+          {% endif %}
         </div>
+      </a>
+      {% endif %}
+      {% endfor %}
+      {% elif thread.thread_type == 'group' %}
+      <a href="{% url 'chat:group-chat' id=thread.id %}" class="chat-link" id="{{ thread.html_id }}">
+        <div
+          class="chat d-flex text-black align-items-center px-3 {% if thread == user.thread_set.all.0 %} first-thread{% endif %}">
+          <div>
+            <img src="{{ thread.groupprofile.image.url }}" alt="" class=" rounded-circle" width="45px" />
+          </div>
+          <div class="flex-fil ms-2">
+            <h6 class="mb-0">{{ thread.groupprofile.name}}</h6>
+            <p class="small text-truncate chat-list-message mb-0 pb-0"
+              title="{{ thread.chatmessage_set.all.last.message }}">
+              {{ thread.chatmessage_set.all.last.message}}</p>
+          </div>
 
-        <div class="messasges-section" id="second">
-            Click Chat to start
+          {% if thread.chatmessage_set.all.last.sender != request.user and not thread.chatmessage.all.last.read %}
+          <!-- <div class="unread-count"></div> -->
+          {% endif %}
+          <!-- <div class="unread-count">{{ thread.unread_messages_count }}</div> -->
         </div>
+      </a>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
 
-        <div id="me" style="display: none">{{request.user.username}}</div>  
+<div class="col-12 col-lg-8 d-none d-lg-flex flex-column align-items-center justify-content-center pe-0">
+  Click Chat to start
+</div>
+{% endblock %}
 
-        {% include 'chat-home-socket.html' %}
-        {% include 'toggle-sidebar.html' %}
-        {% include 'filter.html' %}
-    </body>
-</html>
+
+{% block 'websocket_js' %}
+{% include 'chat-home-socket.html' %}
+{% endblock %}

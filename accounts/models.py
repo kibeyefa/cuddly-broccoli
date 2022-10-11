@@ -25,5 +25,5 @@ class GroupProfile(models.Model):
     creator = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     admins = models.ManyToManyField(User, related_name='admins')
     image = models.ImageField(
-        default='media/group-chat-icon.jpg', upload_to=get_group_image_file_path)
+        default='/group-chat-icon.jpg', upload_to=get_group_image_file_path)
     thread = models.OneToOneField(Thread, on_delete=models.SET_NULL, null=True)

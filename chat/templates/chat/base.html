@@ -1,0 +1,39 @@
+{% load static %}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{% static  'icons/bootstrap-icons.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/app.css' %}" />
+  <title>Document</title>
+</head>
+
+<body class="w-100 h-100 bg-white">
+  <div class="container- w-100 h-100 me-0">
+    <div class="row h-100 w-100 m-0 p-0">
+      {% block 'content' %}
+
+      {% endblock %}
+    </div>
+  </div>
+
+  <div id="me" style="display: none">{{request.user.username}}</div>
+
+  {% block 'websocket_js' %}
+
+  {% endblock %}
+
+  <script src="/static/js/app.js"></script>
+  <script src="/static/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="/static/js/bootstrap.js"></script> -->
+
+</body>
+
+</html>

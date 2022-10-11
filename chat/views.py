@@ -15,9 +15,11 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 # Create your views here.
 
+
 @login_required(login_url='accounts:login')
 def chat_home(request):
     user = request.user
+    user.thread_set.filter(thread_type='personal', empty=True).delete()
     threads = user.thread_set.all()
     template_name = 'chat/chat-home.html'
 
@@ -40,7 +42,8 @@ def personal_chat(request, username):
         if message.sender != user:
             message.read = True
             message.save()
- 
+
+    user.thread_set.filter(thread_type='personal', empty=True).exclude(id=thread.id).delete()
     user_threads = user.thread_set.all()
     print(thread.html_id)
 
@@ -49,7 +52,9 @@ def personal_chat(request, username):
 
     if request.method == 'POST':
         chat_message = request.POST['message']
-        msg = ChatMessage.objects.create(thread=thread, sender=user, message=chat_message)
+        msg = ChatMessage.objects.create(
+            thread=thread, sender=user, message=chat_message)
+        thread.empty = False
         thread.save()
 
         return render(request, template_name, {
@@ -64,6 +69,7 @@ def personal_chat(request, username):
         'user': user,
         'other_user': other_user,
         'thread': thread,
+        'curr_thread': thread,
         'messages': messages,
         'user_threads': user_threads,
     })
@@ -82,7 +88,7 @@ def group_chat_view(request, id):
             message.read = True
             message.save()
 
-
+    user.thread_set.filter(thread_type='personal', empty=True).delete()
     user_threads = user.thread_set.all()
     print(thread.html_id)
 
@@ -91,7 +97,9 @@ def group_chat_view(request, id):
 
     if request.method == 'POST':
         chat_message = request.POST['message']
-        ChatMessage.objects.create(sender=user, thread=thread, message=chat_message)
+        ChatMessage.objects.create(
+            sender=user, thread=thread, message=chat_message)
+        thread.empty = False
         thread.save()
 
         return render(request, template_name, {
@@ -104,10 +112,10 @@ def group_chat_view(request, id):
     return render(request, template_name, {
         'user': user,
         'thread': thread,
+        'curr_thread': thread,
         'messages': messages,
         'user_threads': user_threads
     })
-
 
 
 @login_required(login_url='accounts:login')
@@ -138,13 +146,15 @@ def new_chat(request):
 
     if request.POST:
         th = Thread.objects.create_group_thread()
-        GroupProfile.objects.create(creator=user, thread=th, name=request.POST['name'])
+        GroupProfile.objects.create(
+            creator=user, thread=th, name=request.POST['name'])
         return redirect('chat:group-chat', id=th.id)
 
     if request.GET.get('query'):
         q = request.GET.get('query')
         print(q)
-        users = User.objects.filter(username__icontains=q) | User.objects.filter(first_name__icontains=q ) | User.objects.filter(last_name__icontains=q )
+        users = User.objects.filter(username__icontains=q) | User.objects.filter(
+            first_name__icontains=q) | User.objects.filter(last_name__icontains=q)
         print(users)
         context['users'] = users
 
@@ -157,10 +167,10 @@ def new_chat(request):
 @login_required(login_url='accounts:login')
 def go_back(request, thread_id):
     thread = Thread.objects.get(id=thread_id)
-    if thread.thread_type =='personal':
+    if thread.thread_type == 'personal':
         if len(thread.chatmessage_set.all()) == 0:
             thread.delete()
-    
+
     return redirect('chat:home')
 
 
@@ -168,35 +178,42 @@ def go_back(request, thread_id):
 def chats_api(request, username):
     user = User.objects.get(username=username)
     threads = user.thread_set.all().distinct()
-    dictionary=[]
+    dictionary = []
     for thread in threads:
-        if thread.thread_type == 'personal':
+        if thread.thread_type == 'personal' and thread.empty == False:
             for person in thread.users.all():
                 if person != user:
                     chat = dict(
                         i_d=thread.id,
-                        type = 'personal',
-                        first_name=person.first_name, 
-                        last_name=person.last_name, 
+                        type='personal',
+                        first_name=person.first_name,
+                        last_name=person.last_name,
                         image_url=person.userprofile.image.url,
                         username=person.username,
                         chat_id=thread.html_id,
-                        last_message = thread.chatmessage_set.all().last().message,
-                        sender = thread.chatmessage_set.all().last().sender.username,
-                        unread= thread.chatmessage_set.all().last().read
+                        last_message=thread.chatmessage_set.all().last().message,
+                        sender=thread.chatmessage_set.all().last().sender.username,
+                        unread=thread.chatmessage_set.all().last().read
                     )
         else:
+            try:
+                last_message = thread.chatmessage_set.all().last().message
+                sender = thread.chatmessage_set.all().last().sender.username,
+                unread = thread.chatmessage_set.all().last().read
+            except:
+                last_message = None
+                sender = None
+                unread = True
             chat = dict(
                 i_d=thread.id,
                 type='group',
-                name = thread.groupprofile.name,
-                image_url = thread.groupprofile.image.url,
+                name=thread.groupprofile.name,
+                image_url=thread.groupprofile.image.url,
                 id=thread.id,
-                chat_id=thread.html_id,                
-                last_message= thread.chatmessage_set.all().last().message,
-                sender = thread.chatmessage_set.all().last().sender.username,
-                unread = thread.chatmessage_set.all().last().read
-                
+                chat_id=thread.html_id,
+                last_message=last_message,
+                sender=sender,
+                unread=unread
             )
 
         if chat not in dictionary:

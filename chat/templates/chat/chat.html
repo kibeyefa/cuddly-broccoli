@@ -51,7 +51,7 @@
               width="45px" />
           </div>
           <div class="flex-fill ms-2">
-            <h6 class="mb-0">{{user.first_name}} {{user.last_name}}</h6>
+            <h6 class="my-0">{{user.first_name}} {{user.last_name}}</h6>
             <p class="small text-truncate chat-list-message mb-0 pb-0"
               title="{{ thread.chatmessage_set.all.last.message }}">
               {{ thread.chatmessage_set.all.last.message }}</p>
@@ -72,7 +72,7 @@
             <img src="{{ thread.groupprofile.image.url }}" alt="" class=" rounded-circle" width="45px" />
           </div>
           <div class="flex-fil ms-2">
-            <h6 class="mb-0">{{ thread.groupprofile.name}}</h6>
+            <h6 class="my-0">{{ thread.groupprofile.name}}</h6>
             <p class="small text-truncate chat-list-message mb-0 pb-0"
               title="{{ thread.chatmessage_set.all.last.message }}">
               {{ thread.chatmessage_set.all.last.message}}</p>

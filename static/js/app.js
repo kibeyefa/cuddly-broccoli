@@ -6,7 +6,16 @@ const search = document.getElementById('search');
 const searchIcon = document.getElementById('search-icon');
 const chatHeading = document.getElementById('chats');
 
-document.body.style.height = `${window.innerHeight}px`;
+// document.body.style.height = `${window.innerHeight}px`;
+// document.querySelector('html').style.height = `${window.innerHeight}px`;
+// document.querySelector('.chat-list').style.height = `${
+//   window.innerHeight - 80
+// }px`;
+if (window.location.pathname != '/chat/') {
+  document.querySelector('.chat-section .container').style.height = `${
+    window.innerHeight - 170
+  }px`;
+}
 
 search_bar.addEventListener('input', (e) => {
   let query = e.target.value.toLowerCase();
@@ -69,7 +78,7 @@ const updateChatList = async function (msg_id) {
         </div>
 
         <div class="flex-fill ms-2">
-            <h6 class="mb-0">
+            <h6 class="my-0">
               ${chat.first_name} ${chat.last_name}
             </h6>
             <p class="small text-truncate mb-0 pb-0" title="${
@@ -95,7 +104,7 @@ const updateChatList = async function (msg_id) {
           </div>
 
           <div class="flex-fill ms-2">
-              <h6 class="mb-0">${chat.name}</h6>
+              <h6 class="my-0">${chat.name}</h6>
               <p class="small text-truncate mb-0 pb-0" title="${
                 chat.last_message == null ? '' : chat.last_message
               }">

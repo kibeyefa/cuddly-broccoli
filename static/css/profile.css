@@ -44,6 +44,7 @@
 body {
   background-color: var(--bs-dark);
   min-height: 100vh;
+  min-height: fill-available;
   min-height: -webkit-fill-available;
   width: 100vw;
   overflow: hidden;

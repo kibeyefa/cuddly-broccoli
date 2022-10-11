@@ -6,6 +6,8 @@ const search = document.getElementById('search');
 const searchIcon = document.getElementById('search-icon');
 const chatHeading = document.getElementById('chats');
 
+document.body.style.height = `${window.innerHeight}px`;
+
 search_bar.addEventListener('input', (e) => {
   let query = e.target.value.toLowerCase();
 

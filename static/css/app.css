@@ -1,6 +1,6 @@
 html {
-  height: 100%;
   width: 100vw;
+  height: 100vh;
   height: fill-available;
   height: -webkit-fill-available;
 }
@@ -30,6 +30,7 @@ Chat home and Chat views
 */
 
 .chat-list-container {
+  border-top-left-radius: 5px;
   border-top-left-radius: 25px;
   border-top-right-radius: 25px;
 }

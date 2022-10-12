@@ -7,15 +7,22 @@ const searchIcon = document.getElementById('search-icon');
 const chatHeading = document.getElementById('chats');
 
 // document.body.style.height = `${window.innerHeight}px`;
-// document.querySelector('html').style.height = `${window.innerHeight}px`;
-// document.querySelector('.chat-list').style.height = `${
-//   window.innerHeight - 80
-// }px`;
-if (window.location.pathname != '/chat/') {
-  document.querySelector('.chat-section .container').style.height = `${
-    window.innerHeight - 170
-  }px`;
+document.querySelector(
+  '.left-section'
+).style.height = `${window.innerHeight}px`;
+document.querySelector('.chat-list').style.height = `${
+  window.innerHeight - 80
+}px`;
+function getWindowHeight() {
+  if (window.location.pathname != '/chat/') {
+    document.querySelector('.chat-section .container').style.height = `${
+      window.innerHeight - 170
+    }px`;
+    last.scrollIntoView();
+  }
 }
+
+getWindowHeight();
 
 search_bar.addEventListener('input', (e) => {
   let query = e.target.value.toLowerCase();
@@ -127,3 +134,5 @@ const updateChatList = async function (msg_id) {
     chat_list.appendChild(a);
   });
 };
+
+window.addEventListener('resize', getWindowHeight);

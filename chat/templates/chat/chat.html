@@ -116,7 +116,7 @@
     </div>
 
     <div class="chat-section flex-fill bg-white">
-      <div class="container d-flex flex-column scrollarea">
+      <div class="container d-flex flex-column scrollarea pb-2">
         {% for message in messages %}
         {% if message == thread.chatmessage_set.all.last %}
         {% if message.sender != request.user %}
@@ -135,7 +135,7 @@
       </div>
     </div>
 
-    <div class="message-sender bg- w-100 flex-fill">
+    <div class="message-sender bg- w-100 flex-fill" style="height: 90px;">
       <form action="" method="post" id="form" class="w-100 d-flex">
         {% csrf_token %}
         <textarea name="message" id="message" class="form-control mx-1" placeholder="Send message" required></textarea>

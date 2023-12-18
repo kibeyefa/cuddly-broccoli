@@ -82,6 +82,7 @@ class PrivateChatConsumer(AsyncConsumer):
             self.other_user = await self.get_user(self.other_username)
             self.thread = await self.get_personal_thread([self.user, self.other_user])
             self.group_name = str(self.thread.id)
+            await self.channel_layer.group_add(self.other_username, self.channel_name)
         elif 'id' in self.scope['url_route']['kwargs']:
             self.thread = await self.get_thread(self.scope['url_route']['kwargs']['id'])
             self.group_name = self.scope['url_route']['kwargs']['id']
@@ -90,7 +91,6 @@ class PrivateChatConsumer(AsyncConsumer):
 
         await self.channel_layer.group_add(self.group_name, self.channel_name)
         await self.channel_layer.group_add(self.user.username, self.channel_name)
-        await self.channel_layer.group_add(self.other_username, self.channel_name)
 
         for thread in all_threads:
             await self.channel_layer.group_add(thread, self.channel_name)
